@@ -66,13 +66,15 @@ fi
 # Encrypt mode
 if [ "$MODE" == "E" ] ; then
 
-  gpg2 -o $TARGET_FILE --symmetric --armor --batch --quiet --yes --passphrase $PASSPHRASE --cipher-algo AES256 $SOURCE_FILE
+  gpg -o "$TARGET_FILE" --symmetric --armor --batch --yes --passphrase "$PASSPHRASE" --cipher-algo AES256 "$SOURCE_FILE"
   
-  
+# Decrypt mode
 elif [ "$MODE" == "D" ] ; then
   
-  gpg2 -o $SOURCE_FILE --batch --quiet --yes --passphrase $PASSPHRASE --decrypt $TARGET_FILE
-  
+  gpg -o "$TARGET_FILE" --batch --yes --passphrase "$PASSPHRASE" -d "$SOURCE_FILE"
+
+else
+   report_error "Must specify the mode."
   
 fi
 
