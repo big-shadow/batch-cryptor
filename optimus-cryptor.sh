@@ -1,8 +1,17 @@
 #!/bin/bash
 
+# Author: Ray Winkelman, raywinkelman@gmail.com
+# Date: July 2017
+
+# This program has 2 modes.
+# These modes dictate the general flow of control. 
+# They are encrypt mode, and decrypt mode.
+# Encrypt mode is the default mode, unless decrypt is specified by the -d flag argument.
+
+
 SOURCE_FILE=""
 TARGET_FILE=""
-DECRYPTION=""
+MODE="E"
 PASSPHRASE=""
 
 # Prints a formatted error to the console.
@@ -17,24 +26,25 @@ do
    in
    f) SOURCE_FILE=${OPTARG};;
    t) TARGET_FILE=${OPTARG};;
-   d) DECRYPTION=${OPTARG};;
+   d) MODE="D";;
    p) PASSPHRASE=$OPTARG;;
    esac
 done
 
 
-for FILE in $SOURCE_FILE $TARGET_FILE 
-do
+if [[ -z $SOURCE_FILE || ! -f $SOURCE_FILE ]] ; then
+    report_error "$SOURCE_FILE doesn't exist. Exiting."
+    exit 1
+fi
 
-   echo $FILE
+if [ ! -e "$TARGET_FILE" ] ; then
+   touch "$TARGET_FILE" 2>/dev/null || { echo "Cannot create $TARGET_FILE" >&2; exit 1; }
+fi
 
-   if [[ -z $FILE || ! -f $FILE ]]
-   then
-       report_error "$FILE doesn't exist. Exiting."
-       exit 1
-   fi
-done
-
+if [ ! -w "$TARGET_FILE" ] ; then
+   report_error "Cannot write to $TARGET_FILE"
+   exit 1
+fi
 
 
 exit 0
