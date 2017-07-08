@@ -20,6 +20,7 @@ report_error() {
 }
 
 
+# Mode agnoistic argument parsing and validation.
 while getopts f:t:p:d option
 do
    case "${option}"
@@ -31,8 +32,24 @@ do
    esac
 done
 
+# Not null checks.
+if [ -z $SOURCE_FILE ] ; then
+    report_error "A source file is required."
+    exit 1
+fi
 
-if [[ -z $SOURCE_FILE || ! -f $SOURCE_FILE ]] ; then
+if [ -z $TARGET_FILE ] ; then
+    report_error "A target file is required."
+    exit 1
+fi
+
+if [ -z $PASSPHRASE ] ; then
+    report_error "A passphrase is required!"
+    exit 1
+fi
+
+# Filesystem checks.
+if [ ! -f $SOURCE_FILE ] ; then
     report_error "$SOURCE_FILE doesn't exist. Exiting."
     exit 1
 fi
@@ -46,5 +63,17 @@ if [ ! -w "$TARGET_FILE" ] ; then
    exit 1
 fi
 
+# Encrypt mode
+if [ "$MODE" == "E" ] ; then
+
+  gpg2 -o $TARGET_FILE --symmetric --armor --batch --quiet --yes --passphrase $PASSPHRASE --cipher-algo AES256 $SOURCE_FILE
+  
+  
+elif [ "$MODE" == "D" ] ; then
+  
+  gpg2 -o $SOURCE_FILE --batch --quiet --yes --passphrase $PASSPHRASE --decrypt $TARGET_FILE
+  
+  
+fi
 
 exit 0
