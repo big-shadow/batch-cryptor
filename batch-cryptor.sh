@@ -72,6 +72,7 @@ function crypt {
       RELATIVE_DIR=${ITEM#$SOURCE_DIR}
       RELATIVE_DIR=${RELATIVE_DIR%$ITEM}
 
+      # If it's a folder, recuse.
       if [ -d "$ITEM" ] ; then                   
          mkdir -p "$TARGET_DIR$RELATIVE_DIR"               
          crypt $ITEM                     
@@ -93,7 +94,7 @@ function crypt {
    done     
 }
 
-crypt $SOURCE_DIR $TARGET_DIR
+crypt $SOURCE_DIR
 
 rm -rf "$SOURCE_DIR"
 mkdir -p "$SOURCE_DIR"

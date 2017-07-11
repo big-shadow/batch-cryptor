@@ -20,7 +20,7 @@ report_error() {
 }
 
 
-# Mode agnoistic argument parsing and validation.
+# Argument parsing and validation.
 while getopts f:t:p:d option
 do
    case "${option}"
@@ -31,8 +31,6 @@ do
    p) PASSPHRASE=$OPTARG;;
    esac
 done
-
-echo $SOURCE_FILE
 
 # Not null checks.
 if [ -z "$SOURCE_FILE" ] ; then
