@@ -1,2 +1,20 @@
-# bash-crypt
-A bash aescrypt wrapper program to encrypt and decrypt files using strong passphrases. 
+# batch-cryptor
+
+This bash program is used to batch encrypt and deploy directories recursivley into cloud shared folders (Google Drive, OneDrive, etc) and purge the local data.
+
+## Examples
+
+#### To Encrypt:
+```bash
+./batch-cryptor.sh -s /home/user/media1/Local-Vault/ -t /home/user/Drive/Vault/ -p passphrase
+```
+
+#### To Decrypt:
+```bash
+./batch-cryptor.sh -t /home/user/media1/Local-Vault/ -s /home/user/Drive/Vault/ -p passphrase -d
+```
+
+*Note the placement of the -t and -s argument flags.*
+
+ 
+![alt text](http://cf.chucklesnetwork.com/items/7/5/6/5/2/original/yo-dawg-i-heard-you-like-encryption-so-i-encrypted-your-encrypti.jpg "Bye Felica")
