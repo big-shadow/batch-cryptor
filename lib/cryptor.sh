@@ -32,24 +32,26 @@ do
    esac
 done
 
+echo $SOURCE_FILE
+
 # Not null checks.
-if [ -z $SOURCE_FILE ] ; then
+if [ -z "$SOURCE_FILE" ] ; then
     report_error "A source file is required."
     exit 1
 fi
 
-if [ -z $TARGET_FILE ] ; then
+if [[ -z $TARGET_FILE ]] ; then
     report_error "A target file is required."
     exit 1
 fi
 
-if [ -z $PASSPHRASE ] ; then
+if [[ -z $PASSPHRASE ]] ; then
     report_error "A passphrase is required!"
     exit 1
 fi
 
 # Filesystem checks.
-if [ ! -f $SOURCE_FILE ] ; then
+if [[ ! -f $SOURCE_FILE ]] ; then
     report_error "$SOURCE_FILE doesn't exist. Exiting."
     exit 1
 fi
