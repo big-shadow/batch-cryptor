@@ -16,7 +16,7 @@ PASSPHRASE=""
 
 # Prints a formatted error to the console.
 report_error() {
-    echo -e "\e[31mERROR\e[0m: $1"
+    echo -e "\e[31mERROR\e[0m: cryptor.sh: $1"
 }
 
 
@@ -33,7 +33,7 @@ do
 done
 
 # Not null checks.
-if [ -z "$SOURCE_FILE" ] ; then
+if [[ -z $SOURCE_FILE ]] ; then
     report_error "A source file is required."
     exit 1
 fi
@@ -50,15 +50,15 @@ fi
 
 # Filesystem checks.
 if [[ ! -f $SOURCE_FILE ]] ; then
-    report_error "$SOURCE_FILE doesn't exist. Exiting."
+    report_error "Source Dir: $SOURCE_FILE doesn't exist. Exiting."
     exit 1
 fi
 
-if [ ! -e "$TARGET_FILE" ] ; then
-   touch "$TARGET_FILE" 2>/dev/null || { echo "Cannot create $TARGET_FILE" >&2; exit 1; }
+if [[ ! -e $TARGET_FILE ]] ; then
+   touch -f "$TARGET_FILE" 2>/dev/null || { echo "Cannot create $TARGET_FILE" >&2; exit 1; }
 fi
 
-if [ ! -w "$TARGET_FILE" ] ; then
+if [[ ! -w $TARGET_FILE ]] ; then
    report_error "Cannot write to $TARGET_FILE"
    exit 1
 fi

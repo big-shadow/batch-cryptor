@@ -26,43 +26,45 @@ done
 
 # Prints a formatted error to the console.
 report_error() {
-    echo -e "\e[31mERROR\e[0m: $1"
+    echo -e "\e[31mERROR\e[0m: batch-cryptor.sh: $1"
 }
 
 
 # Not null checks.
-if [ -z $SOURCE_DIR ] ; then
+if [[ -z $SOURCE_DIR ]] ; then
     report_error "A source directory is required."
     exit 1
 fi
 
-if [ -z $TARGET_DIR ] ; then
+if [[ -z $TARGET_DIR ]] ; then
     report_error "A target directory is required."
     exit 1
 fi
 
-if [ -z $PASSPHRASE ] ; then
+if [[ -z $PASSPHRASE ]] ; then
     report_error "A passphrase is required!"
     exit 1
 fi
 
 # Filesystem checks.
-if [ ! -d $SOURCE_DIR ] ; then
-    report_error "$SOURCE_DIR doesn't exist. Exiting."
+if [[ ! -d $SOURCE_DIR ]] ; then
+    report_error "Source Dir: $SOURCE_DIR doesn't exist. Exiting."
     exit 1
 fi
 
-if [ ! -d $TARGET_DIR ] ; then
-    report_error "$TARGET_DIR doesn't exist. Exiting."
+if [[ ! -d $TARGET_DIR ]] ; then
+    report_error "Target Dir: $TARGET_DIR doesn't exist. Exiting."
     exit 1
 fi
 
-if [ ! -w "$TARGET_DIR" ] ; then
+if [[ ! -w $TARGET_DIR ]] ; then
    report_error "Cannot write to $TARGET_DIR"
    exit 1
 fi
 
 rm -rf "$TARGET_DIR"
+mkdir -p "$TARGET_DIR"
+chmod 755 "$TARGET_DIR"
 
 # Recurse into the target and encrypt/decrypt the files.
 function crypt {
@@ -73,13 +75,13 @@ function crypt {
       RELATIVE_DIR=${RELATIVE_DIR%$ITEM}
 
       # If it's a folder, recuse.
-      if [ -d "$ITEM" ] ; then                   
+      if [[ -d $ITEM ]] ; then                   
          mkdir -p "$TARGET_DIR$RELATIVE_DIR"               
-         crypt $ITEM                     
+         crypt $ITEM                  
       else
 
          # Encrypt mode
-         if [ "$MODE" == "E" ] ; then
+         if [[ $MODE == "E" ]] ; then
 
             ./lib/cryptor.sh -f "$ITEM" -t "$TARGET_DIR$RELATIVE_DIR" -p "$PASSPHRASE"
             
