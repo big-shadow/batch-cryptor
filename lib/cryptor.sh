@@ -48,7 +48,7 @@ fi
 
 # Filesystem checks.
 if [[ ! -f $SOURCE_FILE ]] ; then
-    error "Source Dir: $SOURCE_FILE doesn't exist."
+    error "Source File: $SOURCE_FILE doesn't exist."
 fi
 
 if [[ ! -e $TARGET_FILE ]] ; then
@@ -67,7 +67,7 @@ if [ "$MODE" == "E" ] ; then
   
 # Decrypt mode
 else
-  gpg -o "$TARGET_FILE" --batch --yes --passphrase "$PASSPHRASE" -d "$SOURCE_FILE"
+  gpg -o "$TARGET_FILE" --batch --yes --passphrase "$PASSPHRASE" -d "$SOURCE_FILE" 1>/dev/null
   echo "Decrypted: $TARGET_FILE"
 fi
 

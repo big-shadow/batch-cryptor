@@ -81,7 +81,11 @@ function crypt()
       # If it's a folder, recurse.
       if [[ -d $ITEM ]] ; then                   
          mkdir -p "$FULL_PATH"               
-         crypt "$ITEM"                  
+         crypt "$ITEM"     
+      
+      # Empty directory.   
+      elif [[ $ITEM == *"/*"* ]] ; then
+         continue
       else
 
          # Encrypt mode
