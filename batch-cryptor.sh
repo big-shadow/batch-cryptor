@@ -56,8 +56,7 @@ if [[ ! -w $TARGET_DIR ]] ; then
    error "Can't write to $TARGET_DIR"
 fi
 
-echo "This will delete all files in: $TARGET_DIR"
-echo "Do you wish to proceed?"
+echo -e "This will delete all files in: $TARGET_DIR \nDo you wish to proceed?"
 
 select YN in "Yes" "No"; do
     case $YN in
