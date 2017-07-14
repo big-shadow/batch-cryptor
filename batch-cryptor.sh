@@ -76,11 +76,11 @@ function crypt()
          # Encrypt mode
          if [[ $mode == "E" ]] ; then
 
-            ./lib/cryptor.sh -f "$item" -t "$full_path" -p "$passphrase" || { exit 1; }
+            $(dirname $0)/lib/cryptor.sh -f "$item" -t "$full_path" -p "$passphrase" || { exit 1; }
             
          # Decrypt mode
          else
-            ./lib/cryptor.sh -f "$item" -t "$full_path" -p "$passphrase" -d || { exit 1; }
+            $(dirname $0)/lib/cryptor.sh -f "$item" -t "$full_path" -p "$passphrase" -d || { exit 1; }
          fi
 
       fi
