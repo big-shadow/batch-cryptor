@@ -98,8 +98,5 @@ function crypt {
 
 crypt $SOURCE_DIR
 
-rm -rf "$SOURCE_DIR"
-mkdir -p "$SOURCE_DIR"
-
 echo "Done."
 exit 0

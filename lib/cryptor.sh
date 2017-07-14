@@ -67,12 +67,14 @@ fi
 if [ "$MODE" == "E" ] ; then
 
   gpg -o "$TARGET_FILE" --symmetric --armor --batch --yes --passphrase "$PASSPHRASE" --cipher-algo AES256 "$SOURCE_FILE"
+  echo "Encrypted: $TARGET_FILE"
   
 # Decrypt mode
 elif [ "$MODE" == "D" ] ; then
   
   gpg -o "$TARGET_FILE" --batch --yes --passphrase "$PASSPHRASE" -d "$SOURCE_FILE"
-
+  echo "Decrypted: $TARGET_FILE"
+  
 else
    report_error "Must specify the mode."
   
