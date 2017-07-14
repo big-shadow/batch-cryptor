@@ -8,19 +8,19 @@
 # They are encrypt mode, and decrypt mode.
 # Encrypt mode is the default mode, unless decrypt is specified by the -d flag argument.
 
-SOURCE_DIR=""
-TARGET_DIR=""
-MODE="E"
-PASSPHRASE=""
+source_dir=""
+target_dir=""
+mode="E"
+passphrase=""
 
 while getopts s:t:p:d option
 do
    case "${option}"
    in
-   s) SOURCE_DIR=${OPTARG};;
-   t) TARGET_DIR=${OPTARG};;
-   d) MODE="D";;
-   p) PASSPHRASE=$OPTARG;;
+      s) source_dir=${OPTARG};;
+      t) target_dir=${OPTARG};;
+      d) mode="D";;
+      p) passphrase=${OPTARG};;
    esac
 done
 
@@ -30,80 +30,64 @@ error() {
     exit 1
 }
 
-
 # Not null checks.
-if [[ -z $SOURCE_DIR ]] ; then
-    error "A source directory is required."
-fi
-
-if [[ -z $TARGET_DIR ]] ; then
-    error "A target directory is required."
-fi
-
-if [[ -z $PASSPHRASE ]] ; then
-    error "A passphrase is required."
-fi
+if [[ -z $source_dir ]] ; then error "A Source Directory (-s) is required." ; fi
+if [[ -z $target_dir ]] ; then error "A Target Directory (-t) is required." ; fi
+if [[ -z $passphrase ]] ; then error "A Passphrase (-p) is required." ; fi
 
 # Filesystem checks.
-if [[ ! -d $SOURCE_DIR ]] ; then
-    error "Source Dir: $SOURCE_DIR doesn't exist."
-fi
+if [[ ! -d $source_dir ]] ; then error "Source Dir: $source_dir doesn't exist." ; fi
+if [[ ! -d $target_dir ]] ; then error "Target Dir: $target_dir doesn't exist." ; fi
+if [[ ! -w $target_dir ]] ; then error "Can't write to $target_dir" ; fi
 
-if [[ ! -d $TARGET_DIR ]] ; then
-    error "Target Dir: $TARGET_DIR doesn't exist."
-fi
 
-if [[ ! -w $TARGET_DIR ]] ; then
-   error "Can't write to $TARGET_DIR"
-fi
-
-echo -e "This will delete all files in: $TARGET_DIR \nDo you wish to proceed?"
+echo -e "This will delete all files in: $target_dir \nDo you wish to proceed?"
 
 select YN in "Yes" "No"; do
     case $YN in
         Yes ) break;;
-        No ) exit;;
+        No ) exit 1;;
     esac
 done
 
-find "$TARGET_DIR" -mindepth 1 -delete
-chmod 755 "$TARGET_DIR"
+find "$target_dir" -mindepth 1 -delete
+chmod 755 "$target_dir"
 
 # Recurse into the target and encrypt/decrypt the files.
 function crypt() 
 {
-   for ITEM in "${1}"/*    
+   for item in "${1}"/*    
    do
 
-      SUFFIX=${ITEM#$SOURCE_DIR}
-      SUFFIX=${SUFFIX%$ITEM}
-      FULL_PATH="$TARGET_DIR$SUFFIX"
+      suffix=${item#$source_dir}
+      suffix=${suffix%$item}
+      full_path="$target_dir$suffix"
          
       # If it's a folder, recurse.
-      if [[ -d $ITEM ]] ; then                   
-         mkdir -p "$FULL_PATH"               
-         crypt "$ITEM"     
+      if [[ -d $item ]] ; then                   
+         mkdir -p "$full_path"               
+         crypt "$item"     
       
       # Empty directory.   
-      elif [[ $ITEM == *"/*"* ]] ; then
+      elif [[ $item == *"/*"* ]] ; then
          continue
       else
 
          # Encrypt mode
-         if [[ $MODE == "E" ]] ; then
+         if [[ $mode == "E" ]] ; then
 
-            ./lib/cryptor.sh -f "$ITEM" -t "$FULL_PATH" -p "$PASSPHRASE" || { exit 1; }
+            ./lib/cryptor.sh -f "$item" -t "$full_path" -p "$passphrase" || { exit 1; }
             
          # Decrypt mode
          else
-            ./lib/cryptor.sh -f "$ITEM" -t "$FULL_PATH" -p "$PASSPHRASE" -d || { exit 1; }
+            ./lib/cryptor.sh -f "$item" -t "$full_path" -p "$passphrase" -d || { exit 1; }
          fi
 
       fi
    done     
 }
 
-crypt "$SOURCE_DIR"
+crypt "$source_dir"
 
 echo "Done."
 exit 0

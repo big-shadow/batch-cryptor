@@ -8,11 +8,10 @@
 # They are encrypt mode, and decrypt mode.
 # Encrypt mode is the default mode, unless decrypt is specified by the -d flag argument.
 
-
-SOURCE_FILE=""
-TARGET_FILE=""
-MODE="E"
-PASSPHRASE=""
+source_file=""
+target_file=""
+mode="E"
+passphrase=""
 
 # Prints a formatted error to the console, then exits.
 error() {
@@ -26,49 +25,34 @@ while getopts f:t:p:d option
 do
    case "${option}"
    in
-   f) SOURCE_FILE=${OPTARG};;
-   t) TARGET_FILE=${OPTARG};;
-   d) MODE="D";;
-   p) PASSPHRASE=$OPTARG;;
+      f) source_file=${OPTARG};;
+      t) target_file=${OPTARG};;
+      d) mode="D";;
+      p) passphrase=$OPTARG;;
    esac
 done
 
 # Not null checks.
-if [[ -z $SOURCE_FILE ]] ; then
-    error "A source file is required."
-fi
-
-if [[ -z $TARGET_FILE ]] ; then
-    error "A target file is required."
-fi
-
-if [[ -z $PASSPHRASE ]] ; then
-    error "A passphrase is required."
-fi
+if [[ -z $source_file ]] ; then error "A Source File (-f) is required." ; fi
+if [[ -z $target_file ]] ; then error "A Target File (-t) is required." ; fi
+if [[ -z $passphrase ]] ; then error "A Passphrase (-p) is required." ; fi
 
 # Filesystem checks.
-if [[ ! -f $SOURCE_FILE ]] ; then
-    error "Source File: $SOURCE_FILE doesn't exist."
-fi
+if [[ ! -f $source_file ]] ; then error "Source File: $source_file doesn't exist." ; fi
+if [[ ! -e $target_file ]] ; then touch -f "$target_file" 2>/dev/null || { error "Can't create $target_file"; } ; fi
+if [[ ! -w $target_file ]] ; then error "Can't write to $target_file" ; fi
 
-if [[ ! -e $TARGET_FILE ]] ; then
-   touch -f "$TARGET_FILE" 2>/dev/null || { error "Can't create $TARGET_FILE"; }
-fi
-
-if [[ ! -w $TARGET_FILE ]] ; then
-   error "Can't write to $TARGET_FILE"
-fi
 
 # Encrypt mode
-if [ "$MODE" == "E" ] ; then
+if [ "$mode" == "E" ] ; then
 
-  gpg -o "$TARGET_FILE" --symmetric --armor --batch --yes --passphrase "$PASSPHRASE" --cipher-algo AES256 "$SOURCE_FILE"
-  echo "Encrypted: $TARGET_FILE"
+  gpg -o "$target_file" --symmetric --armor --batch --yes --passphrase "$passphrase" --cipher-algo AES256 "$source_file"
+  echo "Encrypted: $target_file"
   
 # Decrypt mode
 else
-  gpg -o "$TARGET_FILE" --batch --yes --passphrase "$PASSPHRASE" -d "$SOURCE_FILE" 1>/dev/null
-  echo "Decrypted: $TARGET_FILE"
+  gpg -o "$target_file" --batch --yes --passphrase "$passphrase" -d "$source_file" 1>/dev/null 2>&1
+  echo "Decrypted: $target_file"
 fi
 
 exit 0
