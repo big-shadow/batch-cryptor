@@ -27,6 +27,7 @@ done
 # Prints a formatted error to the console.
 error() {
     echo -e "\e[31mERROR\e[0m: batch-cryptor.sh: $1"
+    exit 1
 }
 
 
