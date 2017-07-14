@@ -14,9 +14,10 @@ TARGET_FILE=""
 MODE="E"
 PASSPHRASE=""
 
-# Prints a formatted error to the console.
-report_error() {
+# Prints a formatted error to the console, then exits.
+error() {
     echo -e "\e[31mERROR\e[0m: cryptor.sh: $1"
+    exit 1
 }
 
 
@@ -34,33 +35,28 @@ done
 
 # Not null checks.
 if [[ -z $SOURCE_FILE ]] ; then
-    report_error "A source file is required."
-    exit 1
+    error "A source file is required."
 fi
 
 if [[ -z $TARGET_FILE ]] ; then
-    report_error "A target file is required."
-    exit 1
+    error "A target file is required."
 fi
 
 if [[ -z $PASSPHRASE ]] ; then
-    report_error "A passphrase is required!"
-    exit 1
+    error "A passphrase is required."
 fi
 
 # Filesystem checks.
 if [[ ! -f $SOURCE_FILE ]] ; then
-    report_error "Source Dir: $SOURCE_FILE doesn't exist. Exiting."
-    exit 1
+    error "Source Dir: $SOURCE_FILE doesn't exist."
 fi
 
 if [[ ! -e $TARGET_FILE ]] ; then
-   touch -f "$TARGET_FILE" 2>/dev/null || { echo "Cannot create $TARGET_FILE" >&2; exit 1; }
+   touch -f "$TARGET_FILE" 2>/dev/null || { error "Can't create $TARGET_FILE"; }
 fi
 
 if [[ ! -w $TARGET_FILE ]] ; then
-   report_error "Cannot write to $TARGET_FILE"
-   exit 1
+   error "Can't write to $TARGET_FILE"
 fi
 
 # Encrypt mode
@@ -70,14 +66,9 @@ if [ "$MODE" == "E" ] ; then
   echo "Encrypted: $TARGET_FILE"
   
 # Decrypt mode
-elif [ "$MODE" == "D" ] ; then
-  
+else
   gpg -o "$TARGET_FILE" --batch --yes --passphrase "$PASSPHRASE" -d "$SOURCE_FILE"
   echo "Decrypted: $TARGET_FILE"
-  
-else
-   report_error "Must specify the mode."
-  
 fi
 
 exit 0
