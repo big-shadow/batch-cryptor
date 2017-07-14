@@ -1,6 +1,6 @@
 # batch-cryptor
 
-This bash program is used to batch encrypt and deploy directories recursivley into cloud shared folders (Google Drive, OneDrive, etc) and purge the local data.
+This bash program is used to batch encrypt and deploy file structures recursivley into monitored folders (Google Drive, OneDrive, etc).
 
 ## Examples
 

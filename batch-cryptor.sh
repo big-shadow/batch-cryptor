@@ -74,23 +74,24 @@ function crypt()
    for ITEM in "${1}"/*    
    do
 
-      RELATIVE_DIR=${ITEM#$SOURCE_DIR}
-      RELATIVE_DIR=${RELATIVE_DIR%$ITEM}
-
+      SUFFIX=${ITEM#$SOURCE_DIR}
+      SUFFIX=${SUFFIX%$ITEM}
+      FULL_PATH="$TARGET_DIR$SUFFIX"
+         
       # If it's a folder, recurse.
       if [[ -d $ITEM ]] ; then                   
-         mkdir -p "$TARGET_DIR$RELATIVE_DIR"               
+         mkdir -p "$FULL_PATH"               
          crypt "$ITEM"                  
       else
 
          # Encrypt mode
          if [[ $MODE == "E" ]] ; then
 
-            ./lib/cryptor.sh -f "$ITEM" -t "$TARGET_DIR$RELATIVE_DIR" -p "$PASSPHRASE" || { exit 1; }
+            ./lib/cryptor.sh -f "$ITEM" -t "$FULL_PATH" -p "$PASSPHRASE" || { exit 1; }
             
          # Decrypt mode
          else
-            ./lib/cryptor.sh -f "$ITEM" -t "$TARGET_DIR$RELATIVE_DIR" -p "$PASSPHRASE" -d || { exit 1; }
+            ./lib/cryptor.sh -f "$ITEM" -t "$FULL_PATH" -p "$PASSPHRASE" -d || { exit 1; }
          fi
 
       fi
