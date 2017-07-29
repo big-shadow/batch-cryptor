@@ -1,18 +1,17 @@
 # batch-cryptor
 
 This bash program is used to batch encrypt and deploy file structures recursivley into monitored folders (Google Drive, OneDrive, etc).
-*Don't be a very silly jackass and forget to delete your bash - or shell of choice's - history after using this.*
 
 ## Examples
 
 #### To Encrypt:
 ```bash
-./batch-cryptor.sh -s /home/user/media1/Local-Vault/ -t /home/user/Drive/Vault/ -p passphrase
+./batch-cryptor.sh -s /home/user/media1/Local-Vault/ -t /home/user/Drive/Vault/
 ```
 
 #### To Decrypt:
 ```bash
-./batch-cryptor.sh -t /home/user/media1/Local-Vault/ -s /home/user/Drive/Vault/ -p passphrase -d
+./batch-cryptor.sh -t /home/user/media1/Local-Vault/ -s /home/user/Drive/Vault/ -d
 ```
 
 *Note the placement of the -t and -s argument flags.*

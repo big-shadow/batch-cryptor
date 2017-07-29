@@ -8,32 +8,39 @@
 # They are encrypt mode, and decrypt mode.
 # Encrypt mode is the default mode, unless decrypt is specified by the -d flag argument.
 
+### GLOBALS
 source_dir=""
 target_dir=""
 mode="E"
 passphrase=""
 
-while getopts s:t:p:d option
-do
-   case "${option}"
-   in
-      s) source_dir=${OPTARG};;
-      t) target_dir=${OPTARG};;
-      d) mode="D";;
-      p) passphrase=${OPTARG};;
-   esac
-done
 
+### FUNCTIONS
 # Prints a formatted error to the console.
 error() {
     echo -e "\e[31mERROR\e[0m: batch-cryptor.sh: $1"
     exit 1
 }
 
+
+while getopts s:t:d option
+do
+   case "${option}"
+   in
+      s) source_dir=${OPTARG};;
+      t) target_dir=${OPTARG};;
+      d) mode="D";;
+      \?) error "Invalid option: -$OPTARG";;
+   esac
+done
+
+# Get the passphrase.
+read -s -p "Enter a Passphrase: " passphrase
+
 # Not null checks.
 if [[ -z $source_dir ]] ; then error "A Source Directory (-s) is required." ; fi
 if [[ -z $target_dir ]] ; then error "A Target Directory (-t) is required." ; fi
-if [[ -z $passphrase ]] ; then error "A Passphrase (-p) is required." ; fi
+if [[ -z $passphrase ]] ; then error "A Passphrase (-p) can't be blank." ; fi
 
 # Filesystem checks.
 if [[ ! -d $source_dir ]] ; then error "Source Dir: $source_dir doesn't exist." ; fi
