@@ -46,7 +46,7 @@ if [[ ! -w $target_file ]] ; then error "Can't write to $target_file" ; fi
 # Encrypt mode
 if [ "$mode" == "E" ] ; then
 
-  gpg -o "$target_file" --symmetric --armor --batch --yes --passphrase "$passphrase" --cipher-algo AES256 "$source_file"
+  gpg -o "$target_file" --symmetric --armor --batch --yes --passphrase "$passphrase" --cipher-algo AES256 "$source_file" 2>/dev/null
   echo "Encrypted: $target_file"
   
 # Decrypt mode
